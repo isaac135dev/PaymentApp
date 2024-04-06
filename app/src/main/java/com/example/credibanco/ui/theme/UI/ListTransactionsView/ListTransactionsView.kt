@@ -113,7 +113,18 @@ fun ModalContent(viewModel: ListTransactionsViewModel, navController: NavControl
                     name = transaction.receiptId ?: "",
                     Status = transaction.statusDescription ?: "",
                     onClick = {
-                        navigateToDetail(navController, transaction)
+                        transaction.receiptId?.let {
+                            transaction.statusDescription?.let { it1 ->
+                                transaction.rrn?.let { it2 ->
+                                    navigateToDetail(
+                                        navController,
+                                        it,
+                                        it1,
+                                        it2
+                                    )
+                                }
+                            }
+                        }
                     }
                 )
             }
@@ -122,7 +133,12 @@ fun ModalContent(viewModel: ListTransactionsViewModel, navController: NavControl
     }
 }
 
-private fun navigateToDetail(navController: NavController, transaction: Transaction) {
+private fun navigateToDetail(
+    navController: NavController,
+    receiptId: String,
+    statusDescription: String,
+    rrn: String
+) {
     // Navegar al detalle del elemento pasando el ID del elemento como argumento
-    navController.navigate("TransactionDetail/${transaction.receiptId}")
+    navController.navigate("ItemListDetailView/${receiptId}/${statusDescription}/${rrn}")
 }

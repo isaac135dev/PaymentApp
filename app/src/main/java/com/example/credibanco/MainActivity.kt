@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
                                     receiptId = it,
                                     statusDescription = it1,
                                     rrn = it2,
-                                    ItemListDetaiViewModel(context)
+                                    ItemListDetaiViewModel(context),
+                                    navController
                                 )
 
                             }
