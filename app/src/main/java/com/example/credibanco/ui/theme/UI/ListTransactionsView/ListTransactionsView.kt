@@ -2,6 +2,7 @@ package com.example.credibanco.ui.theme.UI.ListTransactionsView
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,30 +13,35 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.credibanco.R
 import com.example.credibanco.ui.theme.Components.ItemListTransaction
-import com.example.credibanco.ui.theme.Data.Model.Transaction
 
 @Composable
-fun ListTransactionsView(viewModel: ListTransactionsViewModel, navController: NavController, navigateToView: () -> Unit) {
+fun ListTransactionsView(
+    viewModel: ListTransactionsViewModel,
+    navController: NavController,
+    navigateToView: () -> Unit
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -66,7 +72,7 @@ fun ContentView(navController: NavController) {
                 contentDescription = "like",
                 modifier = Modifier
                     .size(30.dp)
-                    .clickable(onClick = {navController.navigateUp()})
+                    .clickable(onClick = { navController.navigateUp() })
             )
 
             Text(
@@ -83,6 +89,13 @@ fun ContentView(navController: NavController) {
 
 @Composable
 fun ModalContent(viewModel: ListTransactionsViewModel, navController: NavController) {
+    val transactions by viewModel.getAllTransactions().observeAsState(emptyList())
+
+    val search by viewModel.search.collectAsState()
+    val receptId by viewModel.searchRecepId.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
+
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -96,41 +109,56 @@ fun ModalContent(viewModel: ListTransactionsViewModel, navController: NavControl
             )
             .padding(bottom = 100.dp)
     ) {
-        val transactions by viewModel.getAllTransactions().observeAsState(emptyList())
 
-        var text by rememberSaveable { mutableStateOf("") }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.Center)
-        ) {
-            item {
-                TextField(value = text , onValueChange = {text = it}, modifier = Modifier.padding(horizontal = 60.dp, vertical = 10.dp))
-            }
-            items(transactions) { transaction ->
-                ItemListTransaction(
-                    name = transaction.receiptId ?: "",
-                    Status = transaction.statusDescription ?: "",
-                    onClick = {
-                        transaction.receiptId?.let {
-                            transaction.statusDescription?.let { it1 ->
-                                transaction.rrn?.let { it2 ->
-                                    navigateToDetail(
-                                        navController,
-                                        it,
-                                        it1,
-                                        it2
-                                    )
+        Column {
+            searchField(search, viewModel::onSearchTextChange)
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                items(receptId) { transaction ->
+                    ItemListTransaction(
+                        name = transaction.receiptId ?: "",
+                        Status = transaction.statusDescription ?: "",
+                        onClick = {
+                            transaction.receiptId?.let {
+                                transaction.statusDescription?.let { it1 ->
+                                    transaction.rrn?.let { it2 ->
+                                        navigateToDetail(
+                                            navController,
+                                            it,
+                                            it1,
+                                            it2
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
 
     }
+}
+
+@Composable
+fun searchField(search: String, onSearchTextChanged: (String) -> Unit) {
+    TextField(
+        value = search,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+            .clip(RoundedCornerShape(30.dp))
+            .border(2.dp, Color.DarkGray, RoundedCornerShape(30.dp)),
+        onValueChange =  onSearchTextChanged,
+        label = { Text("buscar transaccion") },
+        singleLine = true,
+        maxLines = 1
+    )
 }
 
 private fun navigateToDetail(

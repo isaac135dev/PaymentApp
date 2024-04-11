@@ -27,4 +27,10 @@ data class Transaction(
     @SerializedName("rrn") val rrn: String?,
     @SerializedName("statusCode") val statusCode: String?,
     @SerializedName("statusDescription") val statusDescription: String?
-)
+){
+    fun searchQuery(receiptId: String): Boolean {
+        val combinations = listOf("${receiptId.first()}")
+
+        return combinations.any { it.contains(receiptId, ignoreCase = true) }
+    }
+}

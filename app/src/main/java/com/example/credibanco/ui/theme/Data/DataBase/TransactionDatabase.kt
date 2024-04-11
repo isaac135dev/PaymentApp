@@ -59,8 +59,30 @@ class TransactionDatabase(context: Context) :
         refreshTransactions()
         return transactions
     }
+    fun getAllTransactions(): List<Transaction> {
+        val transactions = mutableListOf<Transaction>()
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME", null)
 
-    private fun refreshTransactions() {
+        if (cursor.moveToFirst()) {
+            do {
+                val receiptId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_RECEIPT_ID))
+                val rrn = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_RRN))
+                val statusCode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_CODE))
+                val statusDescription = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_DESCRIPTION))
+
+                val transaction = Transaction(receiptId, rrn, statusCode, statusDescription)
+                transactions.add(transaction)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+
+        return transactions
+    }
+
+    fun refreshTransactions() {
         val db = readableDatabase
         val transactionsList = mutableListOf<Transaction>()
         val cursor: Cursor = db.rawQuery("SELECT * FROM $TABLE_NAME", null)
