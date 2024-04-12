@@ -7,13 +7,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.credibanco.ui.theme.Data.Model.Transaction
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 
+@OptIn(FlowPreview::class)
 class ListTransactionsViewModel(private val context: Context): ViewModel() {
 
     private val transactionDatabase = TransactionDatabase(context)
@@ -26,7 +29,9 @@ class ListTransactionsViewModel(private val context: Context): ViewModel() {
 
     private val _recepId = MutableStateFlow(transactionDatabase.getAllTransactions())
 
-    val searchRecepId = search.combine(_recepId) { text, recepId ->
+    val searchRecepId = search
+        .debounce(500L)
+        .combine(_recepId) { text, recepId ->
         if (text.isBlank()) {
             recepId
         } else {

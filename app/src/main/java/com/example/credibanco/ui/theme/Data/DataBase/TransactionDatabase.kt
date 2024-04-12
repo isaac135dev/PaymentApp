@@ -20,6 +20,7 @@ class TransactionDatabase(context: Context) :
         private const val COLUMN_RRN = "rrn"
         private const val COLUMN_STATUS_CODE = "status_code"
         private const val COLUMN_STATUS_DESCRIPTION = "status_description"
+        private const val COLUMN_AMOUNT = "amount"
     }
 
     private val _transactions = MutableLiveData<List<Transaction>>()
@@ -31,7 +32,8 @@ class TransactionDatabase(context: Context) :
                 $COLUMN_RECEIPT_ID TEXT PRIMARY KEY,
                 $COLUMN_RRN TEXT,
                 $COLUMN_STATUS_CODE TEXT,
-                $COLUMN_STATUS_DESCRIPTION TEXT
+                $COLUMN_STATUS_DESCRIPTION TEXT,
+                $COLUMN_AMOUNT TEXT
             )
         """.trimIndent()
 
@@ -49,6 +51,7 @@ class TransactionDatabase(context: Context) :
             put(COLUMN_RRN, transaction.rrn)
             put(COLUMN_STATUS_CODE, transaction.statusCode)
             put(COLUMN_STATUS_DESCRIPTION, transaction.statusDescription)
+            put(COLUMN_AMOUNT, transaction.amount)
         }
         db.insert(TABLE_NAME, null, values)
         db.close()
@@ -70,8 +73,9 @@ class TransactionDatabase(context: Context) :
                 val rrn = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_RRN))
                 val statusCode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_CODE))
                 val statusDescription = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_DESCRIPTION))
+                val amount = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AMOUNT))
 
-                val transaction = Transaction(receiptId, rrn, statusCode, statusDescription)
+                val transaction = Transaction(receiptId, rrn, statusCode, statusDescription, amount)
                 transactions.add(transaction)
             } while (cursor.moveToNext())
         }
@@ -92,7 +96,9 @@ class TransactionDatabase(context: Context) :
                 val rrn = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_RRN))
                 val statusCode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_CODE))
                 val statusDescription = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_DESCRIPTION))
-                val transaction = Transaction(receiptId, rrn, statusCode, statusDescription)
+                val amount = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AMOUNT))
+
+                val transaction = Transaction(receiptId, rrn, statusCode, statusDescription, amount)
                 transactionsList.add(transaction)
             } while (cursor.moveToNext())
         }
@@ -121,8 +127,10 @@ class TransactionDatabase(context: Context) :
             val rrn = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_RRN))
             val statusCode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_CODE))
             val statusDescription = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_DESCRIPTION))
+            val amount = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_AMOUNT))
 
-            transaction = Transaction(receiptId, rrn, statusCode, statusDescription)
+
+            transaction = Transaction(receiptId, rrn, statusCode, statusDescription, amount)
         }
 
         cursor.close()
@@ -138,6 +146,7 @@ class TransactionDatabase(context: Context) :
             put(COLUMN_RRN, transaction.rrn)
             put(COLUMN_STATUS_CODE, transaction.statusCode)
             put(COLUMN_STATUS_DESCRIPTION, transaction.statusDescription)
+            put(COLUMN_AMOUNT, transaction.amount)
         }
 
         val whereClause = "$COLUMN_RECEIPT_ID = ?"

@@ -18,9 +18,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.math.BigDecimal
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
-fun ItemListTransaction(name: String, Status: String, onClick: () -> Unit) {
+fun ItemListTransaction(name: String, Status: String, amount: String, onClick: () -> Unit) {
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(20.dp).clickable(onClick = onClick),
@@ -43,10 +46,17 @@ fun ItemListTransaction(name: String, Status: String, onClick: () -> Unit) {
             )
         }
         Text(
-            text = "-$14.44",
+            text = "- ${formatMoneyValue(amount)}",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
         )
     }
+}
+
+fun formatMoneyValue(value: String): String {
+    val plainValue = value.replace(Regex("[^\\d]"), "")
+    val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
+    val amount = plainValue.toBigDecimalOrNull() ?: BigDecimal.ZERO
+    return numberFormat.format(amount.divide(BigDecimal(100)))
 }

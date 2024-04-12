@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -47,7 +46,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun ItemListDetailView(receiptId: String, statusDescription: String, rrn: String, ItemListDetaiViewModel: ItemListDetaiViewModel, navController: NavController) {
+fun ItemListDetailView(receiptId: String, statusDescription: String, rrn: String, ammount: String, ItemListDetaiViewModel: ItemListDetaiViewModel, navController: NavController) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,7 +57,7 @@ fun ItemListDetailView(receiptId: String, statusDescription: String, rrn: String
 
     ) {
         ContentView(navController)
-        ContentDescription(receiptId, statusDescription)
+        ContentDescription(receiptId, statusDescription, ammount)
         ModalContent(receiptId, rrn, ItemListDetaiViewModel, navController)
     }
 }
@@ -96,7 +95,7 @@ fun ContentView(navController: NavController) {
 }
 
 @Composable
-fun ContentDescription(receiptId: String, statusDescription: String) {
+fun ContentDescription(receiptId: String, statusDescription: String, ammount: String) {
     Box (
         modifier = Modifier.padding(20.dp)
     ) {
@@ -116,7 +115,7 @@ fun ContentDescription(receiptId: String, statusDescription: String) {
                 modifier = Modifier.padding(bottom = 20.dp)
             )
             Text(
-                text = "ammount",
+                text = ammount,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,

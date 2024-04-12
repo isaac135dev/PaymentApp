@@ -57,6 +57,7 @@ class TransactionViewModel(private val context: Context) : ViewModel() {
                 rrn = response.rrn,
                 statusCode = response.statusCode,
                 statusDescription = response.statusDescription,
+                amount = currentAmount
             )
             val dbHelper = TransactionDatabase(context)
             dbHelper.insertTransaction(responseData)

@@ -171,16 +171,20 @@ fun TransactionList(viewModel: HomeViewModel, navController: NavController) {
             ItemListTransaction(
                 name = transaction.receiptId ?: "",
                 Status = transaction.statusDescription ?: "",
+                amount = transaction.amount ?: "",
                 onClick = {
                     transaction.receiptId?.let {
                         transaction.statusDescription?.let { it1 ->
                             transaction.rrn?.let { it2 ->
-                                navigateToDetail(
-                                    navController,
-                                    it,
-                                    it1,
-                                    it2
-                                )
+                                transaction.amount?.let { it3 ->
+                                    navigateToDetail(
+                                        navController,
+                                        it,
+                                        it1,
+                                        it2,
+                                        it3
+                                    )
+                                }
                             }
                         }
                     }
@@ -194,10 +198,11 @@ private fun navigateToDetail(
     navController: NavController,
     receiptId: String,
     statusDescription: String,
-    rrn: String
+    rrn: String,
+    amount: String
 ) {
     // Navegar al detalle del elemento pasando el ID del elemento como argumento
-    navController.navigate("ItemListDetailView/${receiptId}/${statusDescription}/${rrn}")
+    navController.navigate("ItemListDetailView/${receiptId}/${statusDescription}/${rrn}/${amount}")
 }
 
 private fun navigateToDetailList(navController: NavController) {

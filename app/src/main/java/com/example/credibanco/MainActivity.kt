@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
-                composable(route = "ItemListDetailView/{receiptId}/{statusDescription}/{rrn}",
+                composable(route = "ItemListDetailView/{receiptId}/{statusDescription}/{rrn}/{amount}",
                     arguments = listOf(
                         navArgument("receiptId") {
                             type = NavType.StringType
@@ -79,22 +79,30 @@ class MainActivity : ComponentActivity() {
                         },
                         navArgument("rrn") {
                             type = NavType.StringType
+                        },
+                        navArgument("amount") {
+                            type = NavType.StringType
                         }
                     )) { backStackEntry ->
                     val receiptId = backStackEntry.arguments?.getString("receiptId")
                     val statusDescription = backStackEntry.arguments?.getString("statusDescription")
                     val rrn = backStackEntry.arguments?.getString("rrn")
+                    val amount = backStackEntry.arguments?.getString("amount")
 
                     receiptId?.let {
                         statusDescription?.let { it1 ->
-                            rrn?.let {it2 ->
-                                ItemListDetailView(
-                                    receiptId = it,
-                                    statusDescription = it1,
-                                    rrn = it2,
-                                    ItemListDetaiViewModel(context),
-                                    navController
-                                )
+                            rrn?.let { it2 ->
+                                amount?.let {it3 ->
+                                    ItemListDetailView(
+                                        receiptId = it,
+                                        statusDescription = it1,
+                                        rrn = it2,
+                                        ammount = it3,
+                                        ItemListDetaiViewModel(context),
+                                        navController
+                                    )
+
+                                }
 
                             }
                         }

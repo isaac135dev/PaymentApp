@@ -47,6 +47,7 @@ class ItemListDetaiViewModel(private val context: Context): ViewModel() {
                 rrn = response.rrn ?: "Anulada",
                 statusCode = response.statusCode,
                 statusDescription = response.statusDescription,
+                amount = response.amount
             )
 
             val dbHelper = TransactionDatabase(context)

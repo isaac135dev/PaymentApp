@@ -22,6 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +38,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.credibanco.R
 import com.example.credibanco.ui.theme.Components.ItemListTransaction
+import java.math.BigDecimal
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun ListTransactionsView(
@@ -122,6 +128,7 @@ fun ModalContent(viewModel: ListTransactionsViewModel, navController: NavControl
                     ItemListTransaction(
                         name = transaction.receiptId ?: "",
                         Status = transaction.statusDescription ?: "",
+                        amount = transaction.amount ?: "",
                         onClick = {
                             transaction.receiptId?.let {
                                 transaction.statusDescription?.let { it1 ->
@@ -146,6 +153,7 @@ fun ModalContent(viewModel: ListTransactionsViewModel, navController: NavControl
 
 @Composable
 fun searchField(search: String, onSearchTextChanged: (String) -> Unit) {
+
     TextField(
         value = search,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -154,12 +162,14 @@ fun searchField(search: String, onSearchTextChanged: (String) -> Unit) {
             .padding(20.dp)
             .clip(RoundedCornerShape(30.dp))
             .border(2.dp, Color.DarkGray, RoundedCornerShape(30.dp)),
-        onValueChange =  onSearchTextChanged,
+        onValueChange =
+            onSearchTextChanged ,
         label = { Text("buscar transaccion") },
         singleLine = true,
         maxLines = 1
     )
 }
+
 
 private fun navigateToDetail(
     navController: NavController,

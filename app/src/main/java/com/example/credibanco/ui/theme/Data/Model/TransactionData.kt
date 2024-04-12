@@ -19,14 +19,16 @@ data class ResponseData(
     @SerializedName("receiptId") val receiptId: String,
     @SerializedName("rrn") val rrn: String,
     @SerializedName("statusCode") val statusCode: String,
-    @SerializedName("statusDescription") val statusDescription: String
+    @SerializedName("statusDescription") val statusDescription: String,
+    @SerializedName("amount") val amount: String
 )
 
 data class Transaction(
     @SerializedName("receiptId") val receiptId: String?,
     @SerializedName("rrn") val rrn: String?,
     @SerializedName("statusCode") val statusCode: String?,
-    @SerializedName("statusDescription") val statusDescription: String?
+    @SerializedName("statusDescription") val statusDescription: String?,
+    @SerializedName("amount") val amount: String?
 ){
     fun searchQuery(receiptId: String): Boolean {
         val combinations = listOf("${receiptId.first()}")
